@@ -46,7 +46,7 @@
 				//encodeURIComponent fixes weird characters and makes them html friendly
 				// eg  : -> %3A
 
-				params = "submissionType=Track;"
+				params = "submissionType=Track";
 				//this bit feels insecure but its how uniscrobbler does it.
 				params += "&username=" + encodeURIComponent(document.getElementById('Username').value);
 				params += "&password=" + encodeURIComponent(document.getElementById('Password').value);
@@ -64,7 +64,14 @@
 
 				window.alert(params);
 
-
+				jquery.getJSON("scrobble.php? + params", " ",
+					function (info) {
+						if (info.success == 1) {
+							window.alert("scrobbled!")
+						} else {
+							window.alert("failed scrobbling: " + info.message)
+						}
+					});
 
 
 			}
