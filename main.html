@@ -1,0 +1,90 @@
+<html>
+	<head>
+
+		<title>Scrobble Online</title>
+		<meta name="keywords" content="last.fm, scrobble, music, data, data tracking">
+		<!-- <link rel="stylesheet" href="style.css"> -->
+		<link href='https://fonts.googleapis.com/css?family=Lora:400,400italic' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Arimo:400,400italic' rel='stylesheet' type='text/css'>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+		<script type="text/Javascript">
+
+			var userPassError = "Please enter a username and password";
+
+			$()
+
+			function manualScrobble() {
+				artist = document.getElementById("Artist").value;
+				track = document.getElementById("Track").value;
+				album = document.getElementById("Album").value;
+				scrobbleTime = Math.floor(Date.now() / 1000);
+				scrobbleTrack(artist, album, track, 0, scrobbleTime);
+			}
+
+			//this will eventually be called by multiple things so I'm splitting it up
+
+			function scrobbleTrack(artist, album, track, trackNum, timeOfScrobble, duration) {
+
+				// the only important ones are artist and track, last.fm can do the rest i belive
+
+				album =  album || null;
+				trackNum = trackNum || null;
+				duration = duration || 0;
+
+				params = "";
+
+
+				window.alert("scrobbling " + track + " on " + album + " by " + artist );
+
+			// make sure user and pw are entered
+				if ((!(document.getElementById("Password").value)) || (!document.getElementById("Username").value)) {
+					window.alert(userPassError);
+					return false // this stops the whole function. very useful.
+				}
+
+				//encodeURIComponent fixes weird characters and makes them html friendly
+				// eg  : -> %3A
+
+				params = "submissionType=Track;"
+				//this bit feels insecure but its how uniscrobbler does it.
+				params += "&username=" + encodeURIComponent(document.getElementById('Username').value);
+				params += "&password=" + encodeURIComponent(document.getElementById('Password').value);
+				params += "&artist=" + encodeURIComponent(artist);
+				params += "&track=" + encodeURIComponent(track);
+				params += "&album=" + encodeURIComponent(album);
+
+				if (duration != 0) { //future proofing 8)
+					params += "&duration=" + duration;
+					params += "&time=" + (scrobbleTime - duration);
+
+				} else {
+					params += "&time=" + scrobbleTime;
+				}
+
+				window.alert(params);
+
+
+
+
+			}
+
+		</script>
+
+
+	</head>
+	<body>
+		<div id="credentials">
+			<br>
+			<input type="text" placeholder="Last.fm Username" id="Username"> <input type="password" placeholder="Password" id="Password">
+		</div>
+		<div id="song">
+			<br>
+			<input type="text" placeholder="Artist" id="Artist">
+			<input type="text" placeholder="Album Artist (optional)" id="AlbumArtist">
+			<br>
+			<input type="text" placeholder="Track Name" id="Track">
+			<input type="text" placeholder="Album" id="Album">
+			<br>
+			<button onclick="manualScrobble()" type='button'>test</button>
+		</body>
