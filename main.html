@@ -1,13 +1,13 @@
 <html>
 	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
 		<title>Scrobble Online</title>
 		<meta name="keywords" content="last.fm, scrobble, music, data, data tracking">
 		<!-- <link rel="stylesheet" href="style.css"> -->
-		<link href='https://fonts.googleapis.com/css?family=Lora:400,400italic' rel='stylesheet' type='text/css'>
+		<!-- <link href='https://fonts.googleapis.com/css?family=Lora:400,400italic' rel='stylesheet' type='text/css'>
 		<link href='https://fonts.googleapis.com/css?family=Arimo:400,400italic' rel='stylesheet' type='text/css'>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
+ -->
 		<script type="text/Javascript">
 
 			var userPassError = "Please enter a username and password";
@@ -30,7 +30,7 @@
 
 				album =  album || null;
 				trackNum = trackNum || null;
-				duration = duration || 0;
+				duration = duration || 200;
 
 				params = "";
 
@@ -64,16 +64,15 @@
 
 				window.alert(params);
 
-				jquery.getJSON("scrobble.php? + params", " ",
-					function (info) {
-						if (info.success == 1) {
-							window.alert("scrobbled!")
+				jquery.$.post('http://ws.audioscrobbler.com/2.0/?method=track.scrobble&' + params, "",
+					function (data) {
+						if (data.success == 1) {
+							window.alert("scrobbled!");
 						} else {
-							window.alert("failed scrobbling: " + info.message)
+							window.alert("failed scrobbling: " + info.message);
 						}
-					});
-
-
+					}
+				);
 			}
 
 		</script>
@@ -81,6 +80,7 @@
 
 	</head>
 	<body>
+
 		<div id="credentials">
 			<br>
 			<input type="text" placeholder="Last.fm Username" id="Username"> <input type="password" placeholder="Password" id="Password">
@@ -93,5 +93,5 @@
 			<input type="text" placeholder="Track Name" id="Track">
 			<input type="text" placeholder="Album" id="Album">
 			<br>
-			<button onclick="manualScrobble()" type='button'>test</button>
+			<button onclick="manualScrobble()" type='button' disabled="disabled">test</button>
 		</body>
