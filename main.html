@@ -10,6 +10,36 @@
  -->
 		<script type="text/Javascript">
 
+			$(function () {
+				var query = window.location;
+				query = query.substring(query.indexOf("=") + 1);
+				var returned_data = {};
+				if (query.length() != 0 ) {
+					window.alert("congrats!");
+					var signature = md5("api_key7b42da46777d0daaca78ca34ee93fa1dmethodauth.getSessiontoken" + query);
+					//fetch a web service session
+					$.ajax({
+						type: "GET",
+						url: 'http://ws.audioscrobbler.com/2.0/?method=auth.getSession&api_key=7b42da46777d0daaca78ca34ee93fa1d&token=' + query + "&api_sig=" + signature,
+						data: returned_data,
+						cache: false,
+						success: function(data){
+							xmlDoc = $.parseXML( data ),
+							$xml = $(xmlDoc),
+							$name = $xml.find("name");
+							$("#loginStatus").html($name.text());
+							var sessionKey = $xml.find("key").text();
+							PageReadyToUse();
+						}
+					});
+				}
+			}
+
+			function PageReadyToUse() {
+				document.getElementById("#scrobbleButton").prop("disabled", false);
+			}
+
+
 			var userPassError = "Please enter a username and password";
 
 			$()
@@ -31,10 +61,7 @@
 				album =  album || null;
 				trackNum = trackNum || null;
 				duration = duration || 200;
-
 				params = "";
-
-
 				window.alert("scrobbling " + track + " on " + album + " by " + artist );
 
 			// make sure user and pw are entered
@@ -47,14 +74,14 @@
 				// eg  : -> %3A
 
 				params = "submissionType=Track";
-				//this bit feels insecure but its how uniscrobbler does it.
-				params += "&username=" + encodeURIComponent(document.getElementById('Username').value);
-				params += "&password=" + encodeURIComponent(document.getElementById('Password').value);
+				// this bit feels insecure but its how uniscrobbler does it.
+				// params += "&username=" + encodeURIComponent(document.getElementById('Username').value);
+				// params += "&password=" + encodeURIComponent(document.getElementById('Password').value);
 				params += "&artist=" + encodeURIComponent(artist);
 				params += "&track=" + encodeURIComponent(track);
 				params += "&album=" + encodeURIComponent(album);
 
-				if (duration != 0) { //future proofing 8)
+				if (duration != 0) { //future proofing 8-D
 					params += "&duration=" + duration;
 					params += "&time=" + (scrobbleTime - duration);
 
@@ -74,13 +101,17 @@
 					}
 				);
 			}
-
 		</script>
 
 
 	</head>
 	<body>
+		<div id="header">
+		<span style="font-size:20;"> You need to <a href="http://www.last.fm/api/auth/?api_key=7b42da46777d0daaca78ca34ee93fa1d">log in</a> before you can scrobble!</span>
+		<br>
+		<span>Currently <span id="loginStatus">not logged in</span>.</span>
 
+		</div>
 		<div id="credentials">
 			<br>
 			<input type="text" placeholder="Last.fm Username" id="Username"> <input type="password" placeholder="Password" id="Password">
@@ -93,5 +124,5 @@
 			<input type="text" placeholder="Track Name" id="Track">
 			<input type="text" placeholder="Album" id="Album">
 			<br>
-			<button onclick="manualScrobble()" type='button' disabled="disabled">test</button>
+			<button onclick="manualScrobble()" id= "scrobbleButton" type='button' disabled="disabled">test</button>
 		</body>
