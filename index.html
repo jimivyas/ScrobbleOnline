@@ -8,28 +8,28 @@
 
 		$( document ).ready(function() {
         var url = $(location).attr('href');
-        window.alert(url);
+        console.log("Welcome to Scrobble.Online!")
         if (url.includes("=")) {
 	        	var afterEqual = url.substr(url.indexOf("=") + 1);
 		        window.alert(afterEqual);
 		        var token = afterEqual;
 		        if (token.length > 0) {
-		            window.alert("performing signature!");
+		            console.log("performing signature!");
 		            var sig = "api_key7b42da46777d0daaca78ca34ee93fa1dmethodauth.getSessiontoken" + token + "21bc1ff066955de8f38ccd55a62d5738";
 		            var api_signature = hex_md5(sig);
-		            window.alert(api_signature);
+		            console.log(api_signature);
 
 		            $.ajax({
 		                type: "GET",
 		                url:'http://ws.audioscrobbler.com/2.0/',
 		                data:"method=" + "auth.getSession"+ "&api_key=" + "7b42da46777d0daaca78ca34ee93fa1d" + "&token=" + token + "&api_sig=" + api_signature,
 		                success: function(xcode){
+		                	$("#header").hide();
 		                    window.alert("Congratulations! You are permanently logged in now!");
 		                    var xml = $.parseXML(xcode),
-		                    console.log(xml),
 		                    $xml = $( xml ),
 		                    $name = $xml.find("name");
-
+							console.log(xml);
 		                    $( "#loginStatus" ).append("you are now logged in as:" ).append($name.text() );
 		                }
 		            });
@@ -112,12 +112,9 @@
 		<div id="header">
 		<span style="font-size:20;"> You need to <a href="http://www.last.fm/api/auth/?api_key=7b42da46777d0daaca78ca34ee93fa1d">log in</a> before you can scrobble!</span>
 		<br>
-		<span id="loginStatus"></span>
-
 		</div>
 		<div id="credentials">
-			<br>
-			<input type="text" placeholder="Last.fm Username" id="Username"> <input type="password" placeholder="Password" id="Password">
+			<span id="loginStatus"></span>
 		</div>
 		<div id="song">
 			<br>
